@@ -26,5 +26,4 @@ Route::group(['prefix' => config('stripe_integration.web_route_url_prefix'), 'as
     Route::delete('subscription-packages/destroy', config('stripe_integration.package_controller').'@massDestroy')->name('subscription-packages.massDestroy');
     Route::resource('subscription-packages', config('stripe_integration.package_controller'));
 
-
 });

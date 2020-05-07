@@ -196,7 +196,7 @@ class SubscriptionPackagesController extends Controller
             return json_encode($update);
 
         }catch(\Exception $e){
-            return json_encode($e->getMessage());
+            abort(403,$e->getMessage());
         }
     }
 
@@ -206,7 +206,7 @@ class SubscriptionPackagesController extends Controller
             $user = Auth::user();
 
             if(!$user->hasPaymentMethod()) {
-                return view('vendor.vsynch.stripe-integration.stripe.update_payment_method', [
+                return view('vsynch.stripe-integration.update_payment_method', [
                     'intent' => $user->createSetupIntent(),
                     'current_card_digits' => null
                 ]);
@@ -221,7 +221,7 @@ class SubscriptionPackagesController extends Controller
             }
 
         }catch(\Exception $e){
-            return json_encode($e->getMessage());
+            abort(403,$e->getMessage());
         }
     }
 
