@@ -15,8 +15,8 @@ Route::post(
 Route::group(['prefix' => config('stripe_integration.web_route_url_prefix'), 'as' => config('stripe_integration.web_route_name_prefix'),
     'namespace' => config('stripe_integration.web_route_controller_namespace'), 'middleware' => config('stripe_integration.web_route_middleware')], function () {
 
-    Route::post('stripe/update-payment-method', config('stripe_integration.stripe_controller').'@updateUserPaymentMethod')->name('stripe.update-payment-method');
-    Route::get('stripe/edit-payment-method', config('stripe_integration.stripe_controller').'@editUserPaymentMethod')->name('stripe.edit-payment-method');
+    Route::post('stripe/update-payment-method', config('stripe_integration.package_controller').'@updateUserPaymentMethod')->name('stripe.update-payment-method');
+    Route::get('stripe/edit-payment-method', config('stripe_integration.package_controller').'@editUserPaymentMethod')->name('stripe.edit-payment-method');
 
     Route::get('subscription-packages/{subscription_package}/subscribe', config('stripe_integration.package_controller').'@subscribe')->name('subscription-packages.subscribe');
     Route::get('subscription-packages/{subscription_package}/change-plan', config('stripe_integration.package_controller').'@changePlan')->name('subscription-packages.change-plan');

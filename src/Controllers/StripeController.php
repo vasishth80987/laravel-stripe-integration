@@ -16,52 +16,6 @@ use Stripe\Event;
 
 class StripeController extends WebhookController
 {
-    public function updateUserPaymentMethod(Request $request){
-        try{
-
-            $paymentMethod = $request->get('payment_method');
-
-            //TODO -- add guard
-            $user = Auth::user();
-
-            $user->deletePaymentMethods();
-
-            $update = $user->updateDefaultPaymentMethod($paymentMethod);
-
-            $user->updateDefaultPaymentMethodFromStripe();
-
-            return json_encode($update);
-
-        }catch(\Exception $e){
-            return json_encode($e->getMessage());
-        }
-    }
-
-    public function editUserPaymentMethod(){
-        try{
-
-            //TODO -- add guard
-            $user = Auth::user();
-
-            if(!$user->hasPaymentMethod()) {
-                return view('vendor.vsynch.stripe-integration.stripe.update_payment_method', [
-                    'intent' => $user->createSetupIntent(),
-                    'current_card_digits' => null
-                ]);
-            }
-            else{
-                $paymentMethod = $user->defaultPaymentMethod();
-
-                return view('vendor.vsynch.stripe-integration.update_payment_method', [
-                    'intent' => $user->createSetupIntent(),
-                    'current_card_digits' => $paymentMethod->card->last4
-                ]);
-            }
-
-        }catch(\Exception $e){
-            return json_encode($e->getMessage());
-        }
-    }
 
     public function handleCustomerSubscriptionDeleted(array $payload)
     {
