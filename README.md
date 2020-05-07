@@ -3,7 +3,7 @@ A Laravel package that provides customisable product packages for stripe integra
 
 ## Installation
 ```
-composer require vsynch/laravel-stripe-integration
+composer require vsynch/stripe-integration
 
 ```
 
