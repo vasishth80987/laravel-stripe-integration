@@ -31,3 +31,10 @@ Run Package Setup Command: Imports all products from Stripe Account
 php artisan vsynch:stripe-integration-import
 ```
 
+##Usage
+Add the StripeBillable trait to user model
+```
+use StripeBillable;
+```
+After Publishing the packages files, the controllers and mails can later be customised via the config file
+
