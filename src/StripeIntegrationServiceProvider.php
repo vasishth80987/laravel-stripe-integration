@@ -47,9 +47,6 @@ class StripeIntegrationServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/Resources/views/' => resource_path('views/vendor/vsynch/stripe-integration'),
             ], 'vsynch-stripe-integration-views');
-            $this->publishes([
-                __DIR__.'/Mail' => app_path('Mail'),
-            ], 'vsynch-stripe-integration-views');
         }
         $this->commands([
             ImportStripeProducts::class]);
