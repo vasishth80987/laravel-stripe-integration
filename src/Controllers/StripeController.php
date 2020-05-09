@@ -19,8 +19,10 @@ use Vsynch\StripeIntegration\Events\CustomerSubscriptionCreated;
 use Vsynch\StripeIntegration\Events\CustomerSubscriptionUpdated;
 use Vsynch\StripeIntegration\Events\CustomerSubscriptionDeleted;
 use Vsynch\StripeIntegration\Events\CustomerCreated;
-use Vsynch\StripeIntegration\Events\CustomerUpdate;
+use Vsynch\StripeIntegration\Events\CustomerUpdated;
 use Vsynch\StripeIntegration\Events\CustomerDeleted;
+use Vsynch\StripeIntegration\Events\InvoicePaymentActionRequired;
+use Vsynch\StripeIntegration\Events\InvoicePaymentSucceeded;
 
 
 class StripeController extends WebhookController
@@ -33,12 +35,11 @@ class StripeController extends WebhookController
 
         if($response->getStatusCode()==200) {
             $event = Event::constructFrom($payload);
-            $user = $this->getUserByStripeId($event->customer);
+            $user = $this->getUserByStripeId($event->data->object->customer);
             $user->subscriptions->filter(function (Subscription $subscription) use ($event) {
                 return $subscription->stripe_id === $event->id;
             });
-            dd($event);
-            event(new CustomerSubscriptionUpdated());
+            event(new CustomerSubscriptionUpdated($user,$event));
             return $response;
         }
         else {
@@ -53,11 +54,11 @@ class StripeController extends WebhookController
 
         if($response->getStatusCode()==200) {
             $event = Event::constructFrom($payload);
-            $user = $this->getUserByStripeId($event->customer);
+            $user = $this->getUserByStripeId($event->data->object->customer);
             $user->subscriptions->filter(function (Subscription $subscription) use ($event) {
                 return $subscription->stripe_id === $event->id;
             });
-            event(new CustomerSubscriptionUpdated());
+            event(new CustomerSubscriptionDeleted($user,$event));
             return $response;
         }else {
             http_response_code(400);
@@ -71,11 +72,11 @@ class StripeController extends WebhookController
 
         if($response->getStatusCode()==200) {
             $event = Event::constructFrom($payload);
-            $user = $this->getUserByStripeId($event->customer);
+            $user = $this->getUserByStripeId($event->data->object->customer);
             $user->subscriptions->filter(function (Subscription $subscription) use ($event) {
                 return $subscription->stripe_id === $event->id;
             });
-            event(new CustomerSubscriptionUpdated());
+            event(new CustomerDeleted($user,$event));
             return $response;
         }else {
             http_response_code(400);
@@ -89,11 +90,11 @@ class StripeController extends WebhookController
 
         if($response->getStatusCode()==200) {
             $event = Event::constructFrom($payload);
-            $user = $this->getUserByStripeId($event->customer);
+            $user = $this->getUserByStripeId($event->data->object->customer);
             $user->subscriptions->filter(function (Subscription $subscription) use ($event) {
                 return $subscription->stripe_id === $event->id;
             });
-            event(new CustomerSubscriptionUpdated());
+            event(new CustomerUpdated($user,$event));
             return $response;
         }else {
             http_response_code(400);
@@ -104,13 +105,19 @@ class StripeController extends WebhookController
     public function handleCustomerSubscriptionCreated( $payload)
     {
         try {
+
             $event = Event::constructFrom($payload);
+            $user = $this->getUserByStripeId($event->data->object->customer);
+            $user->subscriptions->filter(function (Subscription $subscription) use ($event) {
+                return $subscription->stripe_id === $event->id;
+            });
+            event(new CustomerSubscriptionCreated($user,$event));
+
         } catch(\UnexpectedValueException $e) {
             // Invalid payload
             http_response_code(400);
             exit();
         }
-        Log::info(json_encode($event));
         return $this->successMethod();
     }
 
@@ -119,11 +126,11 @@ class StripeController extends WebhookController
         $response = parent::handleInvoicePaymentActionRequired($payload);
         if($response->getStatusCode()==200) {
             $event = Event::constructFrom($payload);
-            $user = $this->getUserByStripeId($event->customer);
+            $user = $this->getUserByStripeId($event->data->object->customer);
             $user->subscriptions->filter(function (Subscription $subscription) use ($event) {
                 return $subscription->stripe_id === $event->id;
             });
-            event(new CustomerSubscriptionUpdated());
+            event(new InvoicePaymentActionRequired($user,$event));
             return $response;
         }else {
             http_response_code(400);
@@ -134,14 +141,19 @@ class StripeController extends WebhookController
     public function handleInvoicePaymentSucceeded( $payload)
     {
         try {
+
             $event = Event::constructFrom($payload);
+            $user = $this->getUserByStripeId($event->data->object->customer);
+            $user->subscriptions->filter(function (Subscription $subscription) use ($event) {
+                return $subscription->stripe_id === $event->id;
+            });
+            event(new InvoicePaymentSucceeded($user,$event));
 
         } catch(\UnexpectedValueException $e) {
             // Invalid payload
             http_response_code(400);
             exit();
         }
-        Log::info(json_encode($event));
         return $this->successMethod();
     }
 }
