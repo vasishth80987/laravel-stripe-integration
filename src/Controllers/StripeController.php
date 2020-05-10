@@ -39,6 +39,7 @@ class StripeController extends WebhookController
             $user->subscriptions->filter(function (Subscription $subscription) use ($event) {
                 return $subscription->stripe_id === $event->id;
             });
+
             event(new CustomerSubscriptionUpdated($user,$event));
             return $response;
         }
@@ -72,7 +73,7 @@ class StripeController extends WebhookController
 
         if($response->getStatusCode()==200) {
             $event = Event::constructFrom($payload);
-            $user = $this->getUserByStripeId($event->data->object->customer);
+            $user = $this->getUserByStripeId($event->data->object->id);
             $user->subscriptions->filter(function (Subscription $subscription) use ($event) {
                 return $subscription->stripe_id === $event->id;
             });
@@ -90,7 +91,7 @@ class StripeController extends WebhookController
 
         if($response->getStatusCode()==200) {
             $event = Event::constructFrom($payload);
-            $user = $this->getUserByStripeId($event->data->object->customer);
+            $user = $this->getUserByStripeId($event->data->object->id);
             $user->subscriptions->filter(function (Subscription $subscription) use ($event) {
                 return $subscription->stripe_id === $event->id;
             });

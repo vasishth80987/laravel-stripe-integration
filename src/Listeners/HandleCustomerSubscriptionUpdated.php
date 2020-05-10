@@ -14,6 +14,5 @@ class HandleCustomerSubscriptionUpdated
     public function handle(CustomerSubscriptionUpdated $event)
     {
         //$event->user,$event->stripe_event;
-
     }
 }

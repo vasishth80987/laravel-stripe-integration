@@ -25,6 +25,8 @@ class StripeIntegrationServiceProvider extends ServiceProvider
         $this->app->bind('subscriptionPackage', function ($app) {
             return new SubscriptionPackage();
         });
+
+        $this->app->register(StripeIntegrationEventServiceProvider::class);
     }
 
     public function boot()
