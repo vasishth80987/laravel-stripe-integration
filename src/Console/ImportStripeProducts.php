@@ -44,8 +44,18 @@ class ImportStripeProducts extends Command
                     $record = SubscriptionPackage::where(['stripe_pricing_plan' => $plan->id])->first();
                     if (!$record) {
                         $imports[] = $product->name;
-                        SubscriptionPackage::create(['name' => $product->name, 'stripe_product' => $product->id, 'stripe_pricing_plan' => $plan->id]);
+                        SubscriptionPackage::create(['name' => $product->name, 'stripe_product' => $product->id, 'stripe_pricing_plan' => $plan->id,'plan_name' => $plan->nickname]);
                     }
+                    else{
+                        $imports[] = $product->name;
+                        $record->name = $product->name;
+                        $record->stripe_product = $product->id;
+                        $record->stripe_pricing_plan = $plan->id;
+                        $record->plan_name = $plan->nickname;
+
+                        $record->save();
+                    }
+
                 }
             }
             $this->info('Import completed!'.count($imports).' products/plans have been imported to database.');
