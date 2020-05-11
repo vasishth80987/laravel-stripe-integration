@@ -58,7 +58,7 @@ class ImportStripeProducts extends Command
 
                 }
             }
-            $this->info('Import completed!'.count($imports).' products/plans have been imported to database.');
+            $this->info('Import completed! '.count($imports).' products/plans have been imported to database.');
         }catch (\Exception $e){
             $this->error($e->getMessage());
         }

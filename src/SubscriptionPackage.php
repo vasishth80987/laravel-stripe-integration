@@ -25,7 +25,7 @@ class SubscriptionPackage extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'stripe_product', 'stripe_pricing_plan'];
+    protected $fillable = ['name', 'stripe_product', 'stripe_pricing_plan', 'plan_name'];
 
     public function items($type)
     {
