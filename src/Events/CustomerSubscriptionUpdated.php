@@ -25,4 +25,9 @@ class CustomerSubscriptionUpdated
         $this->user = $user;
         $this->stripe_event = $stripe_event;
     }
+
+    public function shouldDiscoverEvents()
+    {
+        return true;
+    }
 }

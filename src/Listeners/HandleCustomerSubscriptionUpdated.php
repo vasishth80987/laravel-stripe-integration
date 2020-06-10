@@ -14,5 +14,7 @@ class HandleCustomerSubscriptionUpdated
     public function handle(CustomerSubscriptionUpdated $event)
     {
         //$event->user,$event->stripe_event;
+        Log::info('Mail sent to '.$event->user->name);
+        Mail::to($event->user)->send(new StripeSubscriptionUpdated($event->user,$event->stripe_event));
     }
 }

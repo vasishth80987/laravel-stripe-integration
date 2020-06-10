@@ -19,6 +19,7 @@ Route::group(['prefix' => config('stripe_integration.web_route_url_prefix'), 'as
     Route::get('stripe/edit-payment-method', config('stripe_integration.package_controller').'@editUserPaymentMethod')->name('stripe.edit-payment-method');
 
     Route::get('subscription-packages/{subscription_package}/subscribe', config('stripe_integration.package_controller').'@subscribe')->name('subscription-packages.subscribe');
+    Route::get('subscription-packages/{subscription_package}/subscriptions', config('stripe_integration.package_controller').'@showSubscriptions')->name('subscription-packages.subscriptions');
     Route::get('subscription-packages/{subscription_package}/change-plan', config('stripe_integration.package_controller').'@changePlan')->name('subscription-packages.change-plan');
     Route::get('subscription-packages/{subscription_package}/unsubscribe', config('stripe_integration.package_controller').'@unsubscribe')->name('subscription-packages.unsubscribe');
     Route::get('subscription-packages/{subscription_package}/unsubscribe-now', config('stripe_integration.package_controller').'@unsubscribeNow')->name('subscription-packages.unsubscribe-now');

@@ -17,7 +17,7 @@
                             <div class="form">
                                 <div class="form-group">
                                     <label for="name" class="control-label">Card Holder Name</label>
-                                    <input id="card-holder-name" type="text" class="form-control underlined">
+                                    <input id="card-holder-name" type="text" class="form-control underlined" placeholder="Full Name as Displayed on Card">
                                 </div>
 
                                 <!-- Stripe Elements Placeholder -->
@@ -41,18 +41,72 @@
         </section>
     </article>
 @endsection
+@push('styles')
+    <style>
+        /**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+        #card-holder-name::placeholder{
+            color: #aab7c4;
+        }
+        .StripeElement,#card-holder-name {
+            box-sizing: border-box;
+
+            height: 40px;
+
+            padding: 10px 12px;
+
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: white;
+
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+    </style>
+@endpush
 @push('scripts')
     <!-- Load Stripe.js on your website. -->
     <script src="https://js.stripe.com/v3"></script>
 @endpush
 @section('scripts')
-@parent
+    @parent
     <script>
 
         const stripe = Stripe("{{env('STRIPE_KEY')}}");
 
+        var style = {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                },
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
         const elements = stripe.elements();
-        const cardElement = elements.create('card');
+        const cardElement = elements.create('card', {style: style});
+
 
         cardElement.mount('#card-element');
 

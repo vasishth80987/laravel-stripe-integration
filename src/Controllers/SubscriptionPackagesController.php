@@ -263,7 +263,12 @@ class SubscriptionPackagesController extends Controller
                 toastr()->success('Your subscription to '.$subscription_package->name.' has resumed', 'Success', ['timeOut' => 5000]);
                 return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index');
             }
-            else return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')->withErrors('You are already subscribed to this package!');
+            else {
+                $user->subscription($subscription_package->stripe_product)->incrementQuantity();
+                toastr()->success('We have incremented your subscription quantity for ' . $subscription_package->name, 'Success', ['timeOut' => 5000]);
+                return redirect()->route(config('stripe_integration.web_route_name_prefix') . 'subscription-packages.index');
+                //return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')->withErrors('You are already subscribed to this package!');
+            }
         }
     }
 
