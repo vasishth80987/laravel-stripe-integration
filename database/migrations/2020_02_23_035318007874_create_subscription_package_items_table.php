@@ -18,6 +18,7 @@ class CreateSubscriptionPackageItemsTable extends Migration
                 $table->integer('subscription_package_id');
                 $table->string('stripe_subscribable_item_id');
                 $table->string('stripe_subscribable_item_type');
+                $table->integer('quantity')->default(1);
                 $table->timestamps();
             });
         }

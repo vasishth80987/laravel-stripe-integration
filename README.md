@@ -42,7 +42,7 @@ use StripeSubscribable;
 ```
 This adds a Manu To Many polymorphic relationship to your product model. Now you can add your products as items to subscription packages
 ```
-$product->subscriptionPackages()->attach($packageId);
+$product->subscriptionPackages()->attach($packageId, ['quantity' => $quantity]);
 ```
 
 After Publishing the packages files, the controllers and mails can later be customised via the config file. This package is built using Laravel official Cashier Package, find documentation here, https://laravel.com/docs/7.x/billing 
