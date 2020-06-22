@@ -40,16 +40,18 @@ class StripeIntegrationServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations' => database_path('migrations'),
             ], 'vsynch-stripe-integration-migrations');
 
-            $this->loadTranslationsFrom(__DIR__.'/Resource/lang', 'Vsynch\\StripeIntegration');
             $this->publishes([
-                __DIR__.'/Resources/lang' => resource_path('lang/vendor/vsynch/stripe-integration'),
+                __DIR__.'/Resources/lang' => resource_path('lang/vendor/StripeIntegration'),
             ], 'vsynch-stripe-integration-lang');
-
-            $this->loadViewsFrom(__DIR__.'/Resources/views', 'Vsynch\\StripeIntegration');
             $this->publishes([
                 __DIR__.'/Resources/views/' => resource_path('views/vendor/vsynch/stripe-integration'),
             ], 'vsynch-stripe-integration-views');
         }
+
+        $this->loadTranslationsFrom(__DIR__.'/Resources/lang', 'StripeIntegration');
+
+        $this->loadViewsFrom(__DIR__.'/Resources/views', 'StripeIntegration');
+
         $this->commands([
             ImportStripeProducts::class]);
         $this->loadRoutesFrom(__DIR__.'/Routes/web.php');
