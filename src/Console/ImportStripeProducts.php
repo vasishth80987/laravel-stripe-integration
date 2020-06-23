@@ -41,20 +41,24 @@ class ImportStripeProducts extends Command
             foreach($products->data as $product){
                 $plans = Plan::all(['product'=>$product->id]);
                 foreach($plans->data as $plan) {
+
                     $record = SubscriptionPackage::where(['stripe_pricing_plan' => $plan->id])->first();
                     if (!$record) {
-                        $imports[] = $product->name;
-                        SubscriptionPackage::create(['name' => $product->name, 'stripe_product' => $product->id, 'stripe_pricing_plan' => $plan->id,'plan_name' => $plan->nickname]);
+                        $record = new SubscriptionPackage();
                     }
-                    else{
-                        $imports[] = $product->name;
-                        $record->name = $product->name;
-                        $record->stripe_product = $product->id;
-                        $record->stripe_pricing_plan = $plan->id;
-                        $record->plan_name = $plan->nickname;
 
-                        $record->save();
-                    }
+                    $imports[] = $product->name;
+                    $record->name = $product->name;
+                    $record->stripe_product = $product->id;
+                    $record->stripe_pricing_plan = $plan->id;
+                    $record->plan_name = $plan->nickname;
+                    $record->price = (float)($plan->amount/100);
+                    $record->pricing_interval = $plan->interval;
+                    $record->pricing_interval_count = $plan->interval_count;
+                    $record->pricing_billing_scheme = $plan->billing_scheme;
+                    $record->status = $plan->active;
+
+                    $record->save();
 
                 }
             }
