@@ -206,7 +206,7 @@ class SubscriptionPackagesController extends Controller
             $user = Auth::user();
 
             if(!$user->hasPaymentMethod()) {
-                return view('vsynch.stripe-integration.update_payment_method', [
+                return view('StripeIntegration::update_payment_method', [
                     'intent' => $user->createSetupIntent(),
                     'current_card_digits' => null
                 ]);
@@ -214,7 +214,7 @@ class SubscriptionPackagesController extends Controller
             else{
                 $paymentMethod = $user->defaultPaymentMethod();
 
-                return view('vendor.vsynch.stripe-integration.update_payment_method', [
+                return view('StripeIntegration::update_payment_method', [
                     'intent' => $user->createSetupIntent(),
                     'current_card_digits' => $paymentMethod->card->last4
                 ]);

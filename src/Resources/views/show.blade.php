@@ -23,7 +23,7 @@
                                     <tr>
                                         <th>ID</th><td>{{ $subscription_package->id }}</td>
                                     </tr>
-                                    <tr><th> {{ trans('subscriptionPackages.name') }} </th><td> {{ $subscription_package->name }} </td></tr><tr><th> {{ trans('subscriptionPackages.stripe_product') }} </th><td> {{ $subscription_package->stripe_product }} </td></tr><tr><th> {{ trans('subscriptionPackages.stripe_pricing_plan') }} </th><td> {{ $subscription_package->stripe_pricing_plan }} </td></tr>
+                                    <tr><th> {{ trans('StripeIntegration::subscriptionPackages.name') }} </th><td> {{ $subscription_package->name }} </td></tr><tr><th> {{ trans('StripeIntegration::subscriptionPackages.stripe_product') }} </th><td> {{ $subscription_package->stripe_product }} </td></tr><tr><th> {{ trans('StripeIntegration::subscriptionPackages.stripe_pricing_plan') }} </th><td> {{ $subscription_package->stripe_pricing_plan }} </td></tr>
                                     </tbody>
                                 </table>
                             </div>

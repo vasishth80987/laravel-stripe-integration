@@ -41,7 +41,7 @@
                                 <table class="table table-bordered table-striped table-hover datatable">
                                     <thead>
                                     <tr>
-                                        <th></th><th>#</th><th>{{ trans('vendor.vsynch.stripe-integration.subscriptionPackages.name') }}</th><th>{{ trans('vendor.vsynch.stripe-integration.subscriptionPackages.stripe_product') }}</th><th>{{ trans('vendor.vsynch.stripe-integration.subscriptionPackages.stripe_pricing_plan') }}</th><th>Actions</th>
+                                        <th></th><th>#</th><th>{{ trans('StripeIntegration::subscriptionPackages.name') }}</th><th>{{ trans('StripeIntegration::subscriptionPackages.stripe_product') }}</th><th>{{ trans('StripeIntegration::subscriptionPackages.stripe_pricing_plan') }}</th><th>Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
