@@ -135,7 +135,7 @@
                     method: 'POST',
                     url: "{{route(config('stripe_integration.web_route_name_prefix').'stripe.update-payment-method')}}",
                     data: { payment_method: setupIntent.payment_method, _method: 'POST' }})
-                    .done(function () { location.replace('{{ url()->previous() }}') })
+                    .done(function () { toastr.success('Payment Details have been updated!', 'Success');location.replace('{{ url()->previous() }}') })
             }
         });
 
