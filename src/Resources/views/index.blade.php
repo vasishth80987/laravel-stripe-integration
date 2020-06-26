@@ -61,7 +61,8 @@
                                                     <a href="{{ url('/admin/subscription-packages/' . $item->id . '/unsubscribe-now') }}" title="Cancel Immediately"><button class="btn btn-danger btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Cancel Immediately</button></a>
                                                 @else
                                                     <a href="{{ url('/admin/subscription-packages/' . $item->id . '/subscriptions' ) }}" title="Subsciptions"><button class="btn btn-outline-primary">View {{auth()->user()->subscription($item->stripe_product)->quantity}} active subscription(s)</button></a>
-                                                <!--<a href="{{ url('/admin/subscription-packages/' . $item->id . '/unsubscribe') }}" title="Unsubscribe"><button class="btn btn-warning btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Unsubscribe</button></a>-->
+                                                    @if(auth()->user()->subscription($item->stripe_product)->quantity>1) <a href="{{ url('/admin/subscription-packages/' . $item->id . '/decrement-quanity') }}" title="Decrement Quanity"><button class="btn btn-warning btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Reduce Subscription Quantity</button></a> @endif
+                                                    <a href="{{ url('/admin/subscription-packages/' . $item->id . '/unsubscribe') }}" title="Unsubscribe"><button class="btn btn-warning btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Unsubscribe</button></a>
                                                     <a href="{{ url('/admin/subscription-packages/' . $item->id . '/subscribe') }}" title="Subscribe"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Make another Subscription</button></a>
                                                 @endif
                                             </td>

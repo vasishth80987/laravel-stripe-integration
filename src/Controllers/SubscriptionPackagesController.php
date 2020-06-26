@@ -311,6 +311,40 @@ class SubscriptionPackagesController extends Controller
         }
     }
 
+    public function decrementSubscriptionQuantity($id){
+        try{
+            $subscription_package = SubscriptionPackage::findOrFail($id);
+
+            //TODO -- add guard
+            $user = Auth::user();
+
+            $stripeCustomer = $user->createOrGetStripeCustomer();
+
+        }catch(\Exception $e){
+            abort(403,$e->getMessage());
+        }
+
+        if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
+            'intent' => $user->createSetupIntent(),
+            'current_card_digits' => null
+        ]);
+        else{
+            $paymentMethod = $user->defaultPaymentMethod();
+
+            if($user->subscribed($subscription_package->stripe_product) && $user->subscription($subscription_package->stripe_product)->quantity>1){
+                $user->subscription($subscription_package->stripe_product)->decrementQuantity();
+                toastr()->success('We have decreased your subscription quantity, you now have '.$user->subscription($subscription_package->stripe_product)->quantity.' subscription(s) for ' . $subscription_package->name, 'Success', ['timeOut' => 5000]);
+                return redirect()->route(config('stripe_integration.web_route_name_prefix') . 'subscription-packages.index');
+            }
+            else if ($user->subscribed($subscription_package->stripe_product)) {
+                $user->subscription($subscription_package->stripe_product)->cancel();
+                toastr()->success('You subscription to '.$subscription_package->name.' has been cancelled', 'Success', ['timeOut' => 5000]);
+                return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index');
+            }
+            else return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')->withErrors('You are not subscribed to this package!');
+        }
+    }
+
     public function unsubscribe($id){
         try{
             $subscription_package = SubscriptionPackage::findOrFail($id);
