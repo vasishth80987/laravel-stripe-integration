@@ -263,11 +263,14 @@ class SubscriptionPackagesController extends Controller
                 toastr()->success('Your subscription to '.$subscription_package->name.' has resumed', 'Success', ['timeOut' => 5000]);
                 return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index');
             }
-            else {
+            elseif($user->subscription($subscription_package->stripe_product)->stripe_plan==$subscription_package->stripe_pricing_plan){
                 $user->subscription($subscription_package->stripe_product)->incrementQuantity();
                 toastr()->success('We have incremented your subscription quantity for ' . $subscription_package->name, 'Success', ['timeOut' => 5000]);
                 return redirect()->route(config('stripe_integration.web_route_name_prefix') . 'subscription-packages.index');
-                //return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')->withErrors('You are already subscribed to this package!');
+            }
+            else {
+                toastr()->success('You are already subscribed to this package!', 'Success', ['timeOut' => 5000]);
+                return redirect()->route(config('stripe_integration.web_route_name_prefix') . 'subscription-packages.index');
             }
         }
     }
@@ -393,5 +396,9 @@ class SubscriptionPackagesController extends Controller
             }
             else return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')->withErrors('Cannot Resume subscription. You are not on Grace Period!');
         }
+    }
+
+    public function showSubscriptions($id){
+
     }
 }

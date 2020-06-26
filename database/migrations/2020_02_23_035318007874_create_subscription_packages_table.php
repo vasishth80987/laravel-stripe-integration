@@ -16,6 +16,7 @@ class CreateSubscriptionPackagesTable extends Migration
             Schema::create('subscription_packages', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');
+                $table->string('display_name')->nullable();
                 $table->text('plan_name')->nullable();
                 $table->string('stripe_product');
                 $table->string('stripe_pricing_plan');

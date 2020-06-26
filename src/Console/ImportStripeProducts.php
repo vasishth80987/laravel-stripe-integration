@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Stripe\Plan;
+use Stripe\Price;
 use Stripe\Product;
 use Vsynch\StripeIntegration\SubscriptionPackage;
 
@@ -40,7 +41,9 @@ class ImportStripeProducts extends Command
         try{
             foreach($products->data as $product){
                 $plans = Plan::all(['product'=>$product->id]);
-                foreach($plans->data as $plan) {
+                $prices = Price::all(['product'=>$product->id]);
+
+                foreach($prices->data as $plan) {
 
                     $record = SubscriptionPackage::where(['stripe_pricing_plan' => $plan->id])->first();
                     if (!$record) {
@@ -52,9 +55,9 @@ class ImportStripeProducts extends Command
                     $record->stripe_product = $product->id;
                     $record->stripe_pricing_plan = $plan->id;
                     $record->plan_name = $plan->nickname;
-                    $record->price = (float)($plan->amount/100);
-                    $record->pricing_interval = $plan->interval;
-                    $record->pricing_interval_count = $plan->interval_count;
+                    $record->price = (float)($plan->unit_amount/100);
+                    $record->pricing_interval = $plan->type=='recurring'?$plan->recurring->interval:null;
+                    $record->pricing_interval_count = $plan->type=='recurring'?$plan->recurring->interval_count:null;
                     $record->pricing_billing_scheme = $plan->billing_scheme;
                     $record->status = $plan->active;
 
