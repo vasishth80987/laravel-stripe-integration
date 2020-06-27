@@ -8,11 +8,15 @@
 return [
     'stripe_controller' => 'Vsynch\StripeIntegration\Controllers\StripeController',
     'package_controller' => 'Vsynch\StripeIntegration\Controllers\SubscriptionPackagesController',
+    'package_api_controller' => 'Vsynch\StripeIntegration\Controllers\Api\V1\SubscriptionPackagesController',
     'package_class' => 'Vsynch\StripeIntegration\SubscriptionPackage',
     'package_request_namespace' => 'Vsynch\StripeIntegration\Requests',
     'web_route_middleware' => ['web','auth','verified'],
     'web_route_url_prefix' => 'admin',
     'web_route_name_prefix' => 'admin.',
+    'api_route_middleware' => ['api','verifyApiToken','auth:api'],
+    'api_route_url_prefix' => 'api/v1',
+    'api_route_name_prefix' => 'api.v1.',
     'enable_event_listeners' => false,
     'subscription_package_item_classes' => ['product'=>'App\Product'],
     'event_listeners' => [

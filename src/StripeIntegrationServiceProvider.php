@@ -55,5 +55,7 @@ class StripeIntegrationServiceProvider extends ServiceProvider
         $this->commands([
             ImportStripeProducts::class]);
         $this->loadRoutesFrom(__DIR__.'/Routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/Routes/api.php');
+
     }
 }

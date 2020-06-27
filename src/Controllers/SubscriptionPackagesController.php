@@ -36,7 +36,7 @@ class SubscriptionPackagesController extends Controller
             }
         }
         catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         return view('vendor.vsynch.stripe-integration.index', compact('subscription_packages'));
@@ -67,7 +67,7 @@ class SubscriptionPackagesController extends Controller
             $subscription_package = SubscriptionPackage::create($requestData);
         }
         catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         return redirect('admin/subscription-packages')->with('flash_message', 'SubscriptionPackage added!');
@@ -87,7 +87,7 @@ class SubscriptionPackagesController extends Controller
             $subscription_package = SubscriptionPackage::findOrFail($id);
         }
         catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         return view('vendor.vsynch.stripe-integration.show', compact('subscription_package'));
@@ -107,7 +107,7 @@ class SubscriptionPackagesController extends Controller
 
         }
         catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         return view('vendor.vsynch.stripe-integration.edit')->with(compact('subscription_package'));
@@ -133,7 +133,7 @@ class SubscriptionPackagesController extends Controller
 
         }
         catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         return redirect('admin/subscription-packages')->with('flash_message', 'SubscriptionPackage updated!');
@@ -152,7 +152,7 @@ class SubscriptionPackagesController extends Controller
             SubscriptionPackage::destroy($id);
         }
         catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
         return redirect('admin/subscription-packages')->with('flash_message', 'SubscriptionPackage deleted!');
     }
@@ -173,7 +173,7 @@ class SubscriptionPackagesController extends Controller
             }
         }
         catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         return response(null, 204);
@@ -196,7 +196,7 @@ class SubscriptionPackagesController extends Controller
             return json_encode($update);
 
         }catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
     }
 
@@ -221,7 +221,7 @@ class SubscriptionPackagesController extends Controller
             }
 
         }catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
     }
 
@@ -235,7 +235,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -285,7 +285,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -321,7 +321,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -355,7 +355,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -384,7 +384,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -413,7 +413,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(403,$e->getMessage());
+            abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -432,7 +432,17 @@ class SubscriptionPackagesController extends Controller
         }
     }
 
-    public function showSubscriptions($id){
+    public function showSubscriptions()
+    {
+        try {
 
+            $user = Auth::user();
+
+            $subscriptions = $user->getActiveSubscriptions()->join('subscription_packages', 'subscriptions.stripe_plan', '=', 'subscription_packages.stripe_pricing_plan')->paginate(25);
+        } catch (\Exception $e) {
+            abort(500, $e->getMessage());
+        }
+
+        return view('vendor.vsynch.stripe-integration.index', compact('subscription_packages'));
     }
 }
