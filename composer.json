@@ -1,0 +1,32 @@
+{
+    "name": "vsynch/stripe-integration",
+    "description": "Add Stripe Payment Methods for users in laravel systems",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Va Sh",
+            "email": "vasishth987@gmail.com"
+        }
+    ],
+    "require": {
+        "yoeunes/toastr" : "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vsynch\\StripeIntegration\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [],
+            "providers": [
+                "Vsynch\\StripeIntegration\\StripeIntegrationServiceProvider"
+            ],
+            "aliases": {
+                "Contacts": "Vsynch\\StripeIntegration\\Facades\\StripeIntegration"
+            }
+        }
+    }
+
+}
