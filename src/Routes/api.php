@@ -13,7 +13,7 @@ Route::group(['prefix' => config('stripe_integration.api_route_url_prefix'), 'as
     Route::get('stripe/edit-payment-method', config('stripe_integration.package_api_controller').'@editUserPaymentMethod')->name('stripe.edit-payment-method');
 
     Route::get('subscription-packages/{subscription_package}/subscribe', config('stripe_integration.package_api_controller').'@subscribe')->name('subscription-packages.subscribe');
-    Route::get('subscriptions', config('stripe_integration.package_api_controller').'@showSubscriptions')->name('subscription-packages.subscriptions');
+    Route::get('subscription-packages/subscriptions', config('stripe_integration.package_api_controller').'@showSubscriptions')->name('subscription-packages.subscriptions');
     Route::get('subscription-packages/{subscription_package}/change-plan', config('stripe_integration.package_api_controller').'@changePlan')->name('subscription-packages.change-plan');
     Route::get('subscription-packages/{subscription_package}/decrement-quanity', config('stripe_integration.package_api_controller').'@decrementSubscriptionQuantity')->name('subscription-packages.decrement-quantity');
     Route::get('subscription-packages/{subscription_package}/unsubscribe', config('stripe_integration.package_api_controller').'@unsubscribe')->name('subscription-packages.unsubscribe');

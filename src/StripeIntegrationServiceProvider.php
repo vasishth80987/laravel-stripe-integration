@@ -46,6 +46,10 @@ class StripeIntegrationServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/Resources/views/' => resource_path('views/vendor/vsynch/stripe-integration'),
             ], 'vsynch-stripe-integration-views');
+
+            $this->publishes([
+                __DIR__ . '/Resources/assets' => public_path('assets/vendor/stripe-integration'),
+            ], 'vsynch-stripe-integration-public-assets');
         }
 
         $this->loadTranslationsFrom(__DIR__.'/Resources/lang', 'StripeIntegration');

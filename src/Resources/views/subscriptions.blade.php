@@ -24,17 +24,6 @@
                                 </ul>
                             @endif
 
-                            <form method="GET" action="{{ url(config('stripe_integration.web_route_url_prefix').'/subscription-packages') }}" accept-charset="UTF-8" class="form-inline my-2 my-lg-0 float-right" role="search">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="search" placeholder="Search..." value="{{ request('search') }}">
-                                    <span class="input-group-append">
-                                        <button class="btn btn-secondary" type="submit">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                            </form>
-
                             <br/>
                             <br/>
                             <div class="table-responsive">
@@ -60,7 +49,7 @@
                                                     <a href="{{ url('/admin/subscription-packages/' . $item->id . '/resume-subscription') }}" title="Resume Subscription"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Resume Subscription</button></a>
                                                     <a href="{{ url('/admin/subscription-packages/' . $item->id . '/unsubscribe-now') }}" title="Cancel Immediately"><button class="btn btn-danger btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Cancel Immediately</button></a>
                                                 @else
-                                                    <a href="{{ url('/admin/subscription-packages/' . $item->id . '/subscriptions' ) }}" title="Subsciptions"><button class="btn btn-outline-primary">View {{auth()->user()->subscription($item->stripe_product)->quantity}} active subscription(s)</button></a>
+                                                    <a href="{{ url('/admin/subscription-packages/subscriptions' ) }}" title="Subsciptions"><button class="btn btn-outline-primary">View {{auth()->user()->subscription($item->stripe_product)->quantity}} active subscription(s)</button></a>
                                                     @if(auth()->user()->subscription($item->stripe_product)->quantity>1) <a href="{{ url('/admin/subscription-packages/' . $item->id . '/decrement-quanity') }}" title="Decrement Quanity"><button class="btn btn-warning btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Reduce Subscription Quantity</button></a> @endif
                                                     <a href="{{ url('/admin/subscription-packages/' . $item->id . '/unsubscribe') }}" title="Unsubscribe"><button class="btn btn-warning btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Unsubscribe</button></a>
                                                     <a href="{{ url('/admin/subscription-packages/' . $item->id . '/subscribe') }}" title="Subscribe"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Make another Subscription</button></a>
@@ -87,40 +76,7 @@
         $(function () {
             if($.fn.dataTable != undefined) {
 
-                let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
-                let deleteButton = {
-                    text: deleteButtonTrans,
-                    url: "{{ route(config('stripe_integration.web_route_name_prefix').'subscription-packages.massDestroy') }}",
-                    className: 'btn-danger',
-                    action: function (e, dt, node, config) {
-                        var ids = $.map(dt.rows({selected: true}).nodes(), function (entry) {
-                            return $(entry).data('entry-id')
-                        });
-
-                        if (ids.length === 0) {
-                            alert('{{ trans('global.datatables.zero_selected') }}')
-
-                            return
-                        }
-
-                        if (confirm('{{ trans('global.areYouSure') }}')) {
-                            $.ajax({
-                                headers: {'x-csrf-token': _token},
-                                method: 'POST',
-                                url: config.url,
-                                data: {ids: ids, _method: 'DELETE'}
-                            })
-                                .done(function () {
-                                    location.reload()
-                                })
-                        }
-                    }
-                }
-                let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-                dtButtons.push(deleteButton)
-
                 $('.datatable:not(.ajaxTable)').DataTable({
-                    buttons: dtButtons,
                     searching: false,
                     paging: false,
                     info: false

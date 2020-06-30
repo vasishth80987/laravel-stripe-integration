@@ -17,7 +17,7 @@
                             <div class="form">
                                 <div class="form-group">
                                     <label for="name" class="control-label">Card Holder Name</label>
-                                    <input id="card-holder-name" type="text" class="form-control underlined" placeholder="Full Name as Displayed on Card">
+                                    <input id="card-holder-name" type="text" class="form-control underlined" placeholder="Full Name as Displayed on Card" required>
                                 </div>
 
                                 <!-- Stripe Elements Placeholder -->
@@ -33,6 +33,8 @@
                                     </button>
                                 </div>
                             </div>
+                            <a href="stripe.com" style="float:right"><img src="/assets/vendor/stripe-integration/stripe-banners/big/powered_by_stripe.png"/></a>
+                            <p style="font-size:10px">V-Sync Digital Solutions does not store any of your payment details on its server. All Payment transactions on this website are handled securely via <a href="stripe.com">Stripe Payment Platform.</a></p>
 
                         </div>
                     </div>
@@ -115,6 +117,8 @@
         const clientSecret = cardButton.dataset.secret;
 
         cardButton.addEventListener('click', async (e) => {
+            cardButton.setAttribute('disabled',true);
+            if(cardHolderName.value==''){cardButton.removeAttribute('disabled');console.log('Name field cannot be empty!');return;}
             const { setupIntent, error } = await stripe.confirmCardSetup(
                 clientSecret, {
                     payment_method: {
@@ -126,6 +130,7 @@
 
             if (error) {
                 console.log(error.message);
+                cardButton.removeAttribute('disabled');
                 // Display "error.message" to the user...
             } else {
                 // The card has been verified successfully...
@@ -135,7 +140,7 @@
                     method: 'POST',
                     url: "{{route(config('stripe_integration.web_route_name_prefix').'stripe.update-payment-method')}}",
                     data: { payment_method: setupIntent.payment_method, _method: 'POST' }})
-                    .done(function () { toastr.success('Payment Details have been updated!', 'Success');location.replace('{{ url()->previous() }}') })
+                    .done(function () { console.log('Payment Details have been updated!', 'Success');location.replace('{{ url()->previous() }}') })
             }
         });
 

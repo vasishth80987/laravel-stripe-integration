@@ -4,6 +4,7 @@ namespace Vsynch\StripeIntegration\Controllers;
 
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Log;
 use Vsynch\StripeIntegration\Requests\SubscriptionPackageMassDestroyRequest;
 use Vsynch\StripeIntegration\Requests\SubscriptionPackageStoreRequest;
 use Vsynch\StripeIntegration\Requests\SubscriptionPackageUpdateRequest;
@@ -36,7 +37,7 @@ class SubscriptionPackagesController extends Controller
             }
         }
         catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         return view('vendor.vsynch.stripe-integration.index', compact('subscription_packages'));
@@ -67,7 +68,7 @@ class SubscriptionPackagesController extends Controller
             $subscription_package = SubscriptionPackage::create($requestData);
         }
         catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         return redirect('admin/subscription-packages')->with('flash_message', 'SubscriptionPackage added!');
@@ -87,7 +88,7 @@ class SubscriptionPackagesController extends Controller
             $subscription_package = SubscriptionPackage::findOrFail($id);
         }
         catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         return view('vendor.vsynch.stripe-integration.show', compact('subscription_package'));
@@ -107,7 +108,7 @@ class SubscriptionPackagesController extends Controller
 
         }
         catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         return view('vendor.vsynch.stripe-integration.edit')->with(compact('subscription_package'));
@@ -124,7 +125,6 @@ class SubscriptionPackagesController extends Controller
     public function update(SubscriptionPackageUpdateRequest $request, $id)
     {
         $requestData = $request->all();
-
         try{
 
             $subscription_package = SubscriptionPackage::findOrFail($id);
@@ -133,10 +133,10 @@ class SubscriptionPackagesController extends Controller
 
         }
         catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
-        return redirect('admin/subscription-packages')->with('flash_message', 'SubscriptionPackage updated!');
+        return back()->with('flash_message', 'SubscriptionPackage updated!');
     }
 
     /**
@@ -152,7 +152,7 @@ class SubscriptionPackagesController extends Controller
             SubscriptionPackage::destroy($id);
         }
         catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
         return redirect('admin/subscription-packages')->with('flash_message', 'SubscriptionPackage deleted!');
     }
@@ -173,7 +173,7 @@ class SubscriptionPackagesController extends Controller
             }
         }
         catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         return response(null, 204);
@@ -196,7 +196,7 @@ class SubscriptionPackagesController extends Controller
             return json_encode($update);
 
         }catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
     }
 
@@ -206,7 +206,7 @@ class SubscriptionPackagesController extends Controller
             $user = Auth::user();
 
             if(!$user->hasPaymentMethod()) {
-                return view('StripeIntegration::update_payment_method', [
+                return view('vendor.vsynch.stripe-integration.update_payment_method', [
                     'intent' => $user->createSetupIntent(),
                     'current_card_digits' => null
                 ]);
@@ -214,14 +214,14 @@ class SubscriptionPackagesController extends Controller
             else{
                 $paymentMethod = $user->defaultPaymentMethod();
 
-                return view('StripeIntegration::update_payment_method', [
+                return view('vendor.vsynch.stripe-integration.update_payment_method', [
                     'intent' => $user->createSetupIntent(),
                     'current_card_digits' => $paymentMethod->card->last4
                 ]);
             }
 
         }catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
     }
 
@@ -235,7 +235,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -252,25 +252,25 @@ class SubscriptionPackagesController extends Controller
                 } catch (IncompletePayment $exception) {
                     return redirect()->route(
                         'cashier.payment',
-                        [$exception->payment->id, 'redirect' => redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')]
+                        [$exception->payment->id, 'redirect' => redirect()->back()]
                     );
                 }
                     toastr()->success('You are now subscribed to ' . $subscription_package->name, 'Success', ['timeOut' => 5000]);
-                    return redirect()->route(config('stripe_integration.web_route_name_prefix') . 'subscription-packages.index');
+                    return redirect()->back();
                 }
             else if($user->subscription($subscription_package->stripe_product)->onGracePeriod()){
                 $user->subscription($subscription_package->stripe_product)->resume();
                 toastr()->success('Your subscription to '.$subscription_package->name.' has resumed', 'Success', ['timeOut' => 5000]);
-                return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index');
+                return redirect()->back();
             }
             elseif($user->subscription($subscription_package->stripe_product)->stripe_plan==$subscription_package->stripe_pricing_plan){
                 $user->subscription($subscription_package->stripe_product)->incrementQuantity();
                 toastr()->success('We have incremented your subscription quantity for ' . $subscription_package->name, 'Success', ['timeOut' => 5000]);
-                return redirect()->route(config('stripe_integration.web_route_name_prefix') . 'subscription-packages.index');
+                return redirect()->back();
             }
             else {
                 toastr()->success('You are already subscribed to this package!', 'Success', ['timeOut' => 5000]);
-                return redirect()->route(config('stripe_integration.web_route_name_prefix') . 'subscription-packages.index');
+                return redirect()->back();
             }
         }
     }
@@ -285,7 +285,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -301,13 +301,13 @@ class SubscriptionPackagesController extends Controller
                 } catch (IncompletePayment $exception) {
                     return redirect()->route(
                         'cashier.payment',
-                        [$exception->payment->id, 'redirect' => redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')]
+                        [$exception->payment->id, 'redirect' => redirect()->back()]
                     );
                 }
                 toastr()->success('You are now subscribed to '.$subscription_package->name, 'Success', ['timeOut' => 5000]);
-                return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index');
+                return redirect()->back();
             }
-            else return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')->withErrors('You are not subscribed to this package!');
+            else return redirect()->back()->withErrors('You are not subscribed to this package!');
         }
     }
 
@@ -321,7 +321,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -334,14 +334,14 @@ class SubscriptionPackagesController extends Controller
             if($user->subscribed($subscription_package->stripe_product) && $user->subscription($subscription_package->stripe_product)->quantity>1){
                 $user->subscription($subscription_package->stripe_product)->decrementQuantity();
                 toastr()->success('We have decreased your subscription quantity, you now have '.$user->subscription($subscription_package->stripe_product)->quantity.' subscription(s) for ' . $subscription_package->name, 'Success', ['timeOut' => 5000]);
-                return redirect()->route(config('stripe_integration.web_route_name_prefix') . 'subscription-packages.index');
+                return redirect()->back();
             }
             else if ($user->subscribed($subscription_package->stripe_product)) {
                 $user->subscription($subscription_package->stripe_product)->cancel();
                 toastr()->success('You subscription to '.$subscription_package->name.' has been cancelled', 'Success', ['timeOut' => 5000]);
-                return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index');
+                return redirect()->back();
             }
-            else return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')->withErrors('You are not subscribed to this package!');
+            else return redirect()->back()->withErrors('You are not subscribed to this package!');
         }
     }
 
@@ -355,7 +355,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -368,9 +368,9 @@ class SubscriptionPackagesController extends Controller
             if ($user->subscribed($subscription_package->stripe_product)) {
                 $user->subscription($subscription_package->stripe_product)->cancel();
                 toastr()->success('You subscription to '.$subscription_package->name.' has been cancelled', 'Success', ['timeOut' => 5000]);
-                return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index');
+                return redirect()->back();
             }
-            else return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')->withErrors('You are not subscribed to this package!');
+            else return redirect()->back()->withErrors('You are not subscribed to this package!');
         }
     }
 
@@ -384,7 +384,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -397,9 +397,9 @@ class SubscriptionPackagesController extends Controller
             if ($user->subscription($subscription_package->stripe_product)->onGracePeriod() || $user->subscribed($subscription_package->stripe_product)) {
                 $user->subscription($subscription_package->stripe_product)->cancelNow();
                 toastr()->success('You subscription to '.$subscription_package->name.' has been cancelled effective immediately', 'Success', ['timeOut' => 5000]);
-                return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index');
+                return redirect()->back();
             }
-            else return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')->withErrors('You are not subscribed to this package!');
+            else return redirect()->back()->withErrors('You are not subscribed to this package!');
         }
     }
 
@@ -413,7 +413,7 @@ class SubscriptionPackagesController extends Controller
             $stripeCustomer = $user->createOrGetStripeCustomer();
 
         }catch(\Exception $e){
-            abort(500,$e->getMessage());
+            Log::error($e->getMessage());abort(500,$e->getMessage());
         }
 
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
@@ -426,9 +426,9 @@ class SubscriptionPackagesController extends Controller
             if($user->subscription($subscription_package->stripe_product)->onGracePeriod()){
                 $user->subscription($subscription_package->stripe_product)->resume();
                 toastr()->success('Your subscription to '.$subscription_package->name.' has resumed', 'Success', ['timeOut' => 5000]);
-                return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index');
+                return redirect()->back();
             }
-            else return redirect()->route(config('stripe_integration.web_route_name_prefix').'subscription-packages.index')->withErrors('Cannot Resume subscription. You are not on Grace Period!');
+            else return redirect()->back()->withErrors('Cannot Resume subscription. You are not on Grace Period!');
         }
     }
 
@@ -438,11 +438,12 @@ class SubscriptionPackagesController extends Controller
 
             $user = Auth::user();
 
-            $subscriptions = $user->getActiveSubscriptions()->join('subscription_packages', 'subscriptions.stripe_plan', '=', 'subscription_packages.stripe_pricing_plan')->paginate(25);
+            $subscription_packages = $user->getActiveSubscriptions()->join('subscription_packages', 'subscriptions.stripe_plan', '=', 'subscription_packages.stripe_pricing_plan')->paginate(25);
+
         } catch (\Exception $e) {
             abort(500, $e->getMessage());
         }
 
-        return view('vendor.vsynch.stripe-integration.index', compact('subscription_packages'));
+        return view('vendor.vsynch.stripe-integration.subscriptions', compact('subscription_packages'));
     }
 }

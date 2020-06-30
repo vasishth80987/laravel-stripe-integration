@@ -26,9 +26,7 @@ class SubscriptionPackageUpdateRequest extends FormRequest
         return [
              'name' => 'required|max:50',
              'stripe_product' => 'required',
-             'stripe_pricing_plan' => 'required',
-             'price_per_unit' => 'required',
-             'billing_interval' => 'required',
+             'stripe_pricing_plan' => 'required'
          ];
     }
 }
