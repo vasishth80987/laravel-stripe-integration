@@ -182,7 +182,7 @@ class SubscriptionPackagesController extends Controller
             if($user) $user = User::findOrFail($user);
             else $user = Auth::user();
 
-            $subscriptions = $user->getActiveSubscriptions()->join('subscription_packages', 'subscriptions.stripe_plan', '=', 'subscription_packages.stripe_pricing_plan')->paginate(5);
+            $subscriptions = $user->getActiveSubscriptions()->paginate(5);
 
         }catch(\Exception $e){
             return response()->json(['success'=>false,'error'=>$e->getMessage()],500);

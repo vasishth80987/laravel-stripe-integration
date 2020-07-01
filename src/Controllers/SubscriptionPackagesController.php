@@ -438,7 +438,7 @@ class SubscriptionPackagesController extends Controller
 
             $user = Auth::user();
 
-            $subscription_packages = $user->getActiveSubscriptions()->join('subscription_packages', 'subscriptions.stripe_plan', '=', 'subscription_packages.stripe_pricing_plan')->paginate(25);
+            $subscription_packages = $user->getActiveSubscriptions()->paginate(25);
 
         } catch (\Exception $e) {
             abort(500, $e->getMessage());
