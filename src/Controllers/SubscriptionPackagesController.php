@@ -225,7 +225,7 @@ class SubscriptionPackagesController extends Controller
         }
     }
 
-    public function subscribe($id){
+    public function subscribe($id,$quantity=1){
         try{
             $subscription_package = SubscriptionPackage::findOrFail($id);
 
@@ -248,7 +248,7 @@ class SubscriptionPackagesController extends Controller
             
             if (!$user->subscribed($subscription_package->stripe_product)) {
                 try {
-                    $user->newSubscription($subscription_package->stripe_product, $subscription_package->stripe_pricing_plan)->create($paymentMethod->id);
+                    $user->newSubscription($subscription_package->stripe_product, $subscription_package->stripe_pricing_plan)->quantity($quantity)->create($paymentMethod->id);
                 } catch (IncompletePayment $exception) {
                     return redirect()->route(
                         'cashier.payment',

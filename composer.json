@@ -24,7 +24,7 @@
                 "Vsynch\\StripeIntegration\\StripeIntegrationServiceProvider"
             ],
             "aliases": {
-                "Contacts": "Vsynch\\StripeIntegration\\Facades\\StripeIntegration"
+                "StripeIntegration": "Vsynch\\StripeIntegration\\Facades\\StripeIntegration"
             }
         }
     }
