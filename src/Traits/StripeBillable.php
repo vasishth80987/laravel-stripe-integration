@@ -20,7 +20,7 @@ trait StripeBillable{
      */
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class, $this->getForeignKey())->join('subscription_packages', 'subscriptions.stripe_plan', '=', 'subscription_packages.stripe_pricing_plan')->select('subscriptions.*','subscription_packages.name as package_name','subscription_packages.display_name as display_name','subscription_packages.plan_name as plan_nickname')->orderBy('subscriptions.created_at', 'desc');
+        return $this->hasMany(Subscription::class, $this->getForeignKey())->join('subscription_packages', 'subscriptions.stripe_plan', '=', 'subscription_packages.stripe_pricing_plan')->select('subscriptions.*','subscription_packages.id as package_id','subscription_packages.name as package_name','subscription_packages.display_name as display_name','subscription_packages.plan_name as plan_nickname')->orderBy('subscriptions.created_at', 'desc');
     }
 
     public function getActiveSubscriptions(){
