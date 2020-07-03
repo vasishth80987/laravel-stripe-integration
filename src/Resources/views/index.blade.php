@@ -53,7 +53,7 @@
                                             <td>
                                                     <a href="{{ url('/admin/subscription-packages/' . $item->id ) }}" title="Specifications"><button class="btn btn-outline-primary">View Specifications</button></a>
                                                 @if(!auth()->user()->subscribed($item->stripe_product))
-                                                    <a href="{{ url('/admin/subscription-packages/' . $item->id . '/subscribe') }}" title="Subscribe"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Subscribe</button></a>
+                                                    <a href="{{ url('/admin/subscription-packages/' . $item->id . '/subscribe') }}" title="Subscribe"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> @if(!is_null($item->pricing_interval))Subscribe @else Pay @endif</button></a>
                                                 @elseif(!auth()->user()->subscribedToPlan($item->stripe_pricing_plan, $item->stripe_product))
                                                     <a href="{{ url('/admin/subscription-packages/' . $item->id . '/change-plan') }}" title="Change Plan"><button class="btn btn-primary btn-sm"><i class="fa fa-spin" aria-hidden="true"></i> Change Plan</button></a>
                                                 @elseif(auth()->user()->subscription($item->stripe_product)->onGracePeriod())
