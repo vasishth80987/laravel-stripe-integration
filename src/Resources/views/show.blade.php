@@ -26,6 +26,7 @@
                                     </tr>
                                     <tr><th> {{ trans('StripeIntegration::subscriptionPackages.name') }} </th><td> {{ $subscription_package->name }} </td></tr>
                                     <tr><th> {{ trans('StripeIntegration::subscriptionPackages.display_name') }} </th><td> {{ $subscription_package->display_name }} </td></tr>
+                                    <tr><th> {{ trans('StripeIntegration::subscriptionPackages.plan_name') }} </th><td> {{ $subscription_package->plan_name }} </td></tr>
                                     <tr><th> {{ trans('StripeIntegration::subscriptionPackages.stripe_product') }} </th><td> {{ $subscription_package->stripe_product }} </td></tr>
                                     <tr><th> {{ trans('StripeIntegration::subscriptionPackages.stripe_pricing_plan') }} </th><td> {{ $subscription_package->stripe_pricing_plan }} </td></tr>
                                     </tbody>

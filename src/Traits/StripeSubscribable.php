@@ -16,6 +16,6 @@ trait StripeSubscribable
      */
     public function subscriptionPackages()
     {
-        return $this->morphToMany('Vsynch\StripeIntegration\SubscriptionPackage', 'stripe_subscribable_item','subscription_package_items');
+        return $this->morphToMany('Vsynch\StripeIntegration\SubscriptionPackage', 'stripe_subscribable_item','subscription_package_items')->withPivot('quantity');
     }
 }

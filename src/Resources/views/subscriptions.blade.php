@@ -35,24 +35,24 @@
                                     </thead>
                                     <tbody>
                                     @foreach($subscription_packages as $item)
-                                        <tr data-entry-id="{{ $item->id }}">
+                                        <tr data-entry-id="{{ $item->package_id }}">
                                             <td></td>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->display_name }}</td><td>{{ $item->plan_nickname }}</td>
                                             <td>
-                                                <a href="{{ url('/admin/subscription-packages/' . $item->id ) }}" title="Specifications"><button class="btn btn-outline-primary">View Specifications</button></a>
+                                                <a href="{{ url('/admin/subscription-packages/' . $item->package_id ) }}" title="Specifications"><button class="btn btn-outline-primary">View Specifications</button></a>
                                                 @if(!auth()->user()->subscribed($item->name))
-                                                    <a href="{{ url('/admin/subscription-packages/' . $item->id . '/subscribe') }}" title="Subscribe"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Subscribe</button></a>
+                                                    <a href="{{ url('/admin/subscription-packages/' . $item->package_id . '/subscribe') }}" title="Subscribe"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Subscribe</button></a>
                                                 @elseif(!auth()->user()->subscribedToPlan($item->stripe_plan, $item->name))
-                                                    <a href="{{ url('/admin/subscription-packages/' . $item->id . '/change-plan') }}" title="Change Plan"><button class="btn btn-primary btn-sm"><i class="fa fa-spin" aria-hidden="true"></i> Change Plan</button></a>
+                                                    <a href="{{ url('/admin/subscription-packages/' . $item->package_id . '/change-plan') }}" title="Change Plan"><button class="btn btn-primary btn-sm"><i class="fa fa-spin" aria-hidden="true"></i> Change Plan</button></a>
                                                 @elseif(auth()->user()->subscription($item->name)->onGracePeriod())
-                                                    <a href="{{ url('/admin/subscription-packages/' . $item->id . '/resume-subscription') }}" title="Resume Subscription"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Resume Subscription</button></a>
-                                                    <a href="{{ url('/admin/subscription-packages/' . $item->id . '/unsubscribe-now') }}" title="Cancel Immediately"><button class="btn btn-danger btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Cancel Immediately</button></a>
+                                                    <a href="{{ url('/admin/subscription-packages/' . $item->package_id . '/resume-subscription') }}" title="Resume Subscription"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Resume Subscription</button></a>
+                                                    <a href="{{ url('/admin/subscription-packages/' . $item->package_id . '/unsubscribe-now') }}" title="Cancel Immediately"><button class="btn btn-danger btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Cancel Immediately</button></a>
                                                 @else
                                                     <a href="{{ url('/admin/subscription-packages/subscriptions' ) }}" title="Subsciptions"><button class="btn btn-outline-primary">View {{auth()->user()->subscription($item->name)->quantity}} active subscription(s)</button></a>
-                                                    @if(auth()->user()->subscription($item->name)->quantity>1) <a href="{{ url('/admin/subscription-packages/' . $item->id . '/decrement-quanity') }}" title="Decrement Quanity"><button class="btn btn-warning btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Reduce Subscription Quantity</button></a> @endif
-                                                    <a href="{{ url('/admin/subscription-packages/' . $item->id . '/unsubscribe') }}" title="Unsubscribe"><button class="btn btn-warning btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Unsubscribe</button></a>
-                                                    <a href="{{ url('/admin/subscription-packages/' . $item->id . '/subscribe') }}" title="Subscribe"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Make another Subscription</button></a>
+                                                    @if(auth()->user()->subscription($item->name)->quantity>1) <a href="{{ url('/admin/subscription-packages/' . $item->package_id . '/decrement-quanity') }}" title="Decrement Quanity"><button class="btn btn-warning btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Reduce Subscription Quantity</button></a> @endif
+                                                    <a href="{{ url('/admin/subscription-packages/' . $item->package_id . '/unsubscribe') }}" title="Unsubscribe"><button class="btn btn-warning btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Unsubscribe</button></a>
+                                                    <a href="{{ url('/admin/subscription-packages/' . $item->package_id . '/subscribe') }}" title="Subscribe"><button class="btn btn-primary btn-sm"><i class="fa fa-money" aria-hidden="true"></i> Make another Subscription</button></a>
                                                 @endif
                                             </td>
                                         </tr>

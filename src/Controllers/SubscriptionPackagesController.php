@@ -5,6 +5,7 @@ namespace Vsynch\StripeIntegration\Controllers;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\Log;
+use Laravel\Cashier\Exceptions\IncompletePayment;
 use Vsynch\StripeIntegration\Requests\SubscriptionPackageMassDestroyRequest;
 use Vsynch\StripeIntegration\Requests\SubscriptionPackageStoreRequest;
 use Vsynch\StripeIntegration\Requests\SubscriptionPackageUpdateRequest;
@@ -248,16 +249,30 @@ class SubscriptionPackagesController extends Controller
             
             if (!$user->subscribed($subscription_package->stripe_product)) {
                 try {
-                    $user->newSubscription($subscription_package->stripe_product, $subscription_package->stripe_pricing_plan)->quantity($quantity)->create($paymentMethod->id);
+                    if(!is_null($subscription_package->pricing_interval)){
+                        $user->newSubscription($subscription_package->stripe_product, $subscription_package->stripe_pricing_plan)->quantity($quantity)->create($paymentMethod->id);
+                        toastr()->success('You are now subscribed to ' . $subscription_package->name, 'Success', ['timeOut' => 5000]);
+                    }
+                    else {
+                        $amount = round($subscription_package->price * $quantity * 100,2);
+                        $stripeCharge = $user->charge($amount, $paymentMethod->id);
+                        $user->invoiceFor($subscription_package->display_name?$subscription_package->display_name:$subscription_package->name.' - '.$subscription_package->plan_name, null,['quantity'=>$quantity,'price'=>$subscription_package->stripe_pricing_plan]);
+                        toastr()->success('You have been charged and invoiced for the payment of $'.$amount/100, 'Success', ['timeOut' => 5000]);
+                        toastr()->success('This is a one time service charge. If you are not already subscribed and would like to subscribe to this product for recurring service, please choose from one of the subscription options', 'Success', ['timeOut' => 7000]);
+                    }
+
                 } catch (IncompletePayment $exception) {
                     return redirect()->route(
                         'cashier.payment',
                         [$exception->payment->id, 'redirect' => redirect()->back()]
                     );
                 }
-                    toastr()->success('You are now subscribed to ' . $subscription_package->name, 'Success', ['timeOut' => 5000]);
-                    return redirect()->back();
+                catch (\Exception $exception) {
+                    Log::error($exception->getTraceAsString());
+                    toastr()->error($exception->getMessage(), 'Failed', ['timeOut' => 10000]);
                 }
+                return redirect()->back();
+            }
             else if($user->subscription($subscription_package->stripe_product)->onGracePeriod()){
                 $user->subscription($subscription_package->stripe_product)->resume();
                 toastr()->success('Your subscription to '.$subscription_package->name.' has resumed', 'Success', ['timeOut' => 5000]);

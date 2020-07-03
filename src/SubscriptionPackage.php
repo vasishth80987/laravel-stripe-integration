@@ -29,14 +29,16 @@ class SubscriptionPackage extends Model
 
     public function items($type)
     {
-        return $this->morphedByMany($type, 'stripe_subscribable_item','subscription_package_items');
+        return $this->morphedByMany($type, 'stripe_subscribable_item','subscription_package_items')->withPivot('quantity');
     }
 
     public function checkIfIncludes($type,$id){
+
+        if(!is_array($id)) $id = [$id];
         $items = $this->items($type)->get();
 
         foreach($items as $item){
-            if($item->id==$id) return true;
+            if(in_array($item->id,$id)) return true;
         }
 
         return false;
