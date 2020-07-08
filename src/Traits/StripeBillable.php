@@ -26,7 +26,7 @@ trait StripeBillable{
     }
 
     public function getActiveSubscriptions(){
-        return $this->subscriptions()->where('stripe_status','==','active')->orWhere('ends_at', '>=', Carbon::now());
+        return $this->subscriptions()->where('stripe_status','=','active')->orWhere('ends_at', '>=', Carbon::now());
     }
 
     public function invoiceFor($description, $amount = null, array $tabOptions = [], array $invoiceOptions = [])
