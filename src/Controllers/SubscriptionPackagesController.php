@@ -242,6 +242,7 @@ class SubscriptionPackagesController extends Controller
         if(!$user->hasPaymentMethod()) return view('vendor.vsynch.stripe-integration.update_payment_method', [
             'intent' => $user->createSetupIntent(),
             'current_card_digits' => null
+            'redirect_to' => url()->full()
         ]);
         else{
             $paymentMethod = $user->defaultPaymentMethod();
