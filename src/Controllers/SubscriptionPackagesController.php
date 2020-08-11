@@ -255,7 +255,7 @@ class SubscriptionPackagesController extends Controller
                     }
                     else {
                         $amount = round($subscription_package->price * $quantity * 100,2);
-                        $stripeCharge = $user->charge($amount, $paymentMethod->id);
+                        //$stripeCharge = $user->charge($amount, $paymentMethod->id);
                         $user->invoiceFor($subscription_package->display_name?$subscription_package->display_name:$subscription_package->name.' - '.$subscription_package->plan_name, null,['quantity'=>$quantity,'price'=>$subscription_package->stripe_pricing_plan]);
                         toastr()->success('You have been charged and invoiced for the payment of $'.$amount/100, 'Success', ['timeOut' => 5000]);
                         toastr()->success('This is a one time service charge. If you are not already subscribed and would like to subscribe to this product for recurring service, please choose from one of the subscription options', 'Success', ['timeOut' => 7000]);
