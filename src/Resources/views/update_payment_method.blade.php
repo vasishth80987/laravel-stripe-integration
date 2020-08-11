@@ -140,7 +140,7 @@
                     method: 'POST',
                     url: "{{route(config('stripe_integration.web_route_name_prefix').'stripe.update-payment-method')}}",
                     data: { payment_method: setupIntent.payment_method, _method: 'POST' }})
-                    .done(function () { console.log('Payment Details have been updated!', 'Success');location.replace('{{ url()->previous() }}') })
+                    .done(function () { console.log('Payment Details have been updated!', 'Success');location.replace('{{ isset($redirect_to)? $redirect_to:url()->previous() }}') })
             }
         });
 
